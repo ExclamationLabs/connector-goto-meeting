@@ -1,6 +1,8 @@
 # GotoMeeting Connector
 
-Open source Midpoint connector for GotoMeeting <https://www.gotomeeting.com/>
+Open source Identity Management connector for [GotoMeeting](https://www.gotomeeting.com/)
+
+Developed and tested in [Midpoint](https://evolveum.com/midpoint/), but also could be utilized in any [ConnId](https://connid.tirasa.net/) framework. 
 
 ## Introductory Notes
 
@@ -39,6 +41,11 @@ can be found by seeing the string in the URL when you use the Goto Meeting
 Admin Web UI - https://admin.logmeininc.com/ (.../accounts/xxxxxx/). This Admin Web UI allows you manage users and groups.
 
 API postman doc - https://documenter.getpostman.com/view/7571707/SVzxXeWo?version=latest#f318cc59-c33b-482f-a3cc-e32cad2d585e
+
+## Midpoint configuration
+
+See XML files in src/test/resources folder for Midpoint examples.  resourceOverlay.xml is an example
+resource configuration setup for Midpoint.
 
 ## Configuration properties
 
