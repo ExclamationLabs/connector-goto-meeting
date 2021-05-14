@@ -17,8 +17,8 @@
 package com.exclamationlabs.connid.base.gotomeeting.util;
 
 import com.exclamationlabs.connid.base.connector.driver.rest.RestFaultProcessor;
-import com.exclamationlabs.connid.gotomeeting.model.response.fault.ErrorResponse;
-import com.exclamationlabs.connid.gotomeeting.model.response.fault.ErrorResponseCode;
+import com.exclamationlabs.connid.base.gotomeeting.model.response.fault.ErrorResponse;
+import com.exclamationlabs.connid.base.gotomeeting.model.response.fault.ErrorResponseCode;
 import com.google.gson.GsonBuilder;
 import org.apache.commons.codec.Charsets;
 import org.apache.commons.lang3.StringUtils;

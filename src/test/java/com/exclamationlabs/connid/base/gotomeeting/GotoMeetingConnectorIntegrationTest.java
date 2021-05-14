@@ -26,10 +26,7 @@ import org.junit.FixMethodOrder;
 import org.junit.Test;
 import org.junit.runners.MethodSorters;
 
-import java.util.ArrayList;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
+import java.util.*;
 
 import static org.junit.Assert.*;
 
@@ -144,6 +141,28 @@ public class GotoMeetingConnectorIntegrationTest extends IntegrationTest {
         assertEquals(1, idValues.size());
         assertTrue(StringUtils.isNotBlank(idValues.get(0)));
         assertTrue(StringUtils.isNotBlank(nameValues.get(0)));
+    }
+
+    @Test
+    public void test260AddGroupToUser() {
+        Set<Attribute> attributes = new HashSet<>();
+        attributes.add(new AttributeBuilder().setName(GotoMeetingUserAttribute.USER_KEY.name()).addValue(generatedUserId).build());
+        attributes.add(new AttributeBuilder().setName(GotoMeetingUserAttribute.GROUP_IDS.name()).addValue(
+                Collections.singletonList(generatedGroupId)).build());
+        Uid newId = connector.update(ObjectClass.ACCOUNT, new Uid(generatedUserId), attributes, new OperationOptionsBuilder().build());
+        assertNotNull(newId);
+        assertNotNull(newId.getUidValue());
+    }
+
+    @Test
+    public void test270RemoveGroupFromUser() {
+        Set<Attribute> attributes = new HashSet<>();
+        attributes.add(new AttributeBuilder().setName(GotoMeetingUserAttribute.USER_KEY.name()).addValue(generatedUserId).build());
+        attributes.add(new AttributeBuilder().setName(GotoMeetingUserAttribute.GROUP_IDS.name()).addValue(
+                Collections.EMPTY_LIST).build());
+        Uid newId = connector.update(ObjectClass.ACCOUNT, new Uid(generatedUserId), attributes, new OperationOptionsBuilder().build());
+        assertNotNull(newId);
+        assertNotNull(newId.getUidValue());
     }
 
     @Test
