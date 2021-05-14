@@ -44,6 +44,6 @@ public class GotoMeetingConfiguration extends BaseConnectorConfiguration {
             helpMessageKey = "File path for the GotoMeeting Configuration File",
             required = true)
     public String getConfigurationFilePath() {
-        return getMidPointConfigurationFilePath();
+        return innerGetMidPointConfigurationFilePath();
     }
 }

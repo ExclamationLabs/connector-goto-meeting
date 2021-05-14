@@ -16,20 +16,22 @@ package com.exclamationlabs.connid.base.gotomeeting.driver.rest;
 import com.exclamationlabs.connid.base.connector.configuration.ConnectorProperty;
 import com.exclamationlabs.connid.base.connector.driver.rest.BaseRestDriver;
 import com.exclamationlabs.connid.base.connector.driver.rest.RestFaultProcessor;
+import com.exclamationlabs.connid.base.connector.driver.rest.RestResponseData;
 import com.exclamationlabs.connid.base.gotomeeting.configuration.GotoMeetingConfiguration;
 import com.exclamationlabs.connid.base.gotomeeting.model.GotoMeetingGroup;
 import com.exclamationlabs.connid.base.gotomeeting.model.GotoMeetingUser;
-import com.exclamationlabs.connid.base.gotomeeting.model.request.UserCreationRequest;
-import com.exclamationlabs.connid.base.gotomeeting.model.response.ListGroupsResponse;
-import com.exclamationlabs.connid.base.gotomeeting.model.response.ListUsersResponse;
 import com.exclamationlabs.connid.base.gotomeeting.util.GotoMeetingFaultProcessor;
 import org.identityconnectors.framework.common.exceptions.ConnectorException;
 
-import java.util.ArrayList;
-import java.util.List;
 import java.util.Set;
 
-public class GotoMeetingDriver extends BaseRestDriver<GotoMeetingUser, GotoMeetingGroup> {
+public class GotoMeetingDriver extends BaseRestDriver {
+
+    public GotoMeetingDriver() {
+        super();
+        addInvocator(GotoMeetingUser.class, new GotoMeetingUserInvocator());
+        addInvocator(GotoMeetingGroup.class, new GotoMeetingGroupInvocator());
+    }
 
     @Override
     protected RestFaultProcessor getFaultProcessor() {
@@ -55,8 +57,8 @@ public class GotoMeetingDriver extends BaseRestDriver<GotoMeetingUser, GotoMeeti
     @Override
     public void test() throws ConnectorException {
         try {
-            GotoMeetingUser meUser = executeGetRequest("/me", GotoMeetingUser.class);
-            if (meUser == null) {
+            RestResponseData<GotoMeetingUser> meUser = executeGetRequest("/me", GotoMeetingUser.class);
+            if (meUser.getResponseObject() == null) {
                 throw new ConnectorException("Self-identification for GotoMeeting connection user returned invalid response.");
             }
         } catch (Exception e) {
@@ -70,83 +72,5 @@ public class GotoMeetingDriver extends BaseRestDriver<GotoMeetingUser, GotoMeeti
         authenticator = null;
     }
 
-    @Override
-    public String createUser(GotoMeetingUser userModel) throws ConnectorException {
-        UserCreationRequest requestData = new UserCreationRequest();
-        requestData.setUsers(new ArrayList<>());
-        requestData.getUsers().add(userModel);
-        GotoMeetingUser[] newUsers = executePostRequest("/users?allOrNothing=false", GotoMeetingUser[].class, requestData);
 
-        if (newUsers == null || newUsers.length == 0) {
-            throw new ConnectorException("Response from user creation was invalid");
-        }
-        return newUsers[0].getKey();
-    }
-
-    @Override
-    public String createGroup(GotoMeetingGroup groupModel) throws ConnectorException {
-        return executePostRequest("/groups", String.class, groupModel);
-    }
-
-    @Override
-    public void updateUser(String userId, GotoMeetingUser userModel) throws ConnectorException {
-        String userKey = userModel.getKey();
-        userModel.setKey(null); // cannot pass key value in update JSON, can only be present in URL
-        executePutRequest("/users/" + userKey + "?allOrNothing=true", null, userModel);
-    }
-
-    @Override
-    public void updateGroup(String groupId, GotoMeetingGroup groupModel) throws ConnectorException {
-        GotoMeetingGroup modifyGroup = new GotoMeetingGroup();
-        // Cannot send key in update JSON, and name is the only field to update,
-        // so create a new object w/ just the name set
-        modifyGroup.setName(groupModel.getName());
-
-        executePutRequest("/groups/" + groupModel.getKey(), null, modifyGroup);
-    }
-
-    @Override
-    public void deleteUser(String userId) throws ConnectorException {
-        executeDeleteRequest("/users/" + userId, null);
-    }
-
-    @Override
-    public void deleteGroup(String groupId) throws ConnectorException {
-        executeDeleteRequest("/groups/" + groupId, null);
-    }
-
-    @Override
-    public List<GotoMeetingUser> getUsers() throws ConnectorException {
-        ListUsersResponse response = executeGetRequest("/users", ListUsersResponse.class);
-        return response.getResults();
-    }
-
-    @Override
-    public List<GotoMeetingGroup> getGroups() throws ConnectorException {
-        ListGroupsResponse response = executeGetRequest("/groups", ListGroupsResponse.class);
-        return response.getResults();
-    }
-
-    @Override
-    public GotoMeetingUser getUser(String userId) throws ConnectorException {
-        return executeGetRequest("/users/" + userId, GotoMeetingUser.class);
-    }
-
-    @Override
-    public GotoMeetingGroup getGroup(String groupId) throws ConnectorException {
-        return executeGetRequest("/groups/" + groupId, GotoMeetingGroup.class);
-    }
-
-    @Override
-    public void addGroupToUser(String groupId, String userId) throws ConnectorException {
-        executePutRequest("/groups/" + groupId + "/users/" + userId,
-                null, null);
-    }
-
-    @Override
-    public void removeGroupFromUser(String groupId, String userId) throws ConnectorException {
-        // Note: GotoMeeting only seems to support removing a user from ALL groups it
-        // currently belongs to.  So that is the logic that is invoked here.
-        executeDeleteRequest("/users/" + userId + "/groups", null);
-    }
 }

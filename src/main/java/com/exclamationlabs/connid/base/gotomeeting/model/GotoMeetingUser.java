@@ -13,11 +13,11 @@
 
 package com.exclamationlabs.connid.base.gotomeeting.model;
 
-import com.exclamationlabs.connid.base.connector.model.UserIdentityModel;
+import com.exclamationlabs.connid.base.connector.model.IdentityModel;
 
 import java.util.List;
 
-public class GotoMeetingUser implements UserIdentityModel {
+public class GotoMeetingUser implements IdentityModel {
     private String key;
 
     private String firstName;
@@ -209,16 +209,5 @@ public class GotoMeetingUser implements UserIdentityModel {
 
     public void setInviteCount(Integer inviteCount) {
         this.inviteCount = inviteCount;
-    }
-
-
-    @Override
-    public String getAssignedGroupsAttributeName() {
-        return null;
-    }
-
-    @Override
-    public List<String> getAssignedGroupIds() {
-        return null;
     }
 }

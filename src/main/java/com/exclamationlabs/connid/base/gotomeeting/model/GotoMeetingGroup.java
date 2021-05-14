@@ -13,11 +13,11 @@
 
 package com.exclamationlabs.connid.base.gotomeeting.model;
 
-import com.exclamationlabs.connid.base.connector.model.GroupIdentityModel;
+import com.exclamationlabs.connid.base.connector.model.IdentityModel;
 
 import java.util.List;
 
-public class GotoMeetingGroup implements GroupIdentityModel {
+public class GotoMeetingGroup implements IdentityModel {
     private String key;
     private String name;
     private List<String> keyPath;

@@ -82,7 +82,8 @@ public class GotoMeetingConnectorTest extends ConnectorMockRestTest {
 
     @Test
     public void test120UserModify() {
-        prepareMockResponseEmpty();
+        String responseData = "{\"key\":\"6581286685341855244\",\"email\":\"fred@rubble.com\",\"firstName\":\"Fred\",\"lastName\":\"Flinstone\",\"locale\":\"en_US\",\"timeZone\":\"America/Los_Angeles\",\"settings\":{\"G2M\":{\"tollAccessible\":true,\"tollEnabled\":true,\"voipAccessible\":true,\"voipEnabled\":true,\"privateConfCallAccessible\":true,\"privateConfCallEnabled\":false,\"tollFreeAccessible\":true,\"tollFreeEnabled\":true,\"dialOutAccessible\":true,\"dialOutEnabled\":true,\"tollCountries\":[\"US\"],\"allowedTollCountries\":[\"AT\",\"AU\",\"BE\",\"BG\",\"BR\",\"CA\",\"CH\",\"CL\",\"CO\",\"CZ\",\"DE\",\"DK\",\"ES\",\"FI\",\"FR\",\"GB\",\"GR\",\"HU\",\"IE\",\"IL\",\"IT\",\"LU\",\"MX\",\"MY\",\"NL\",\"NO\",\"NZ\",\"PA\",\"PE\",\"RO\",\"SE\",\"TR\",\"US\",\"ZA\"],\"tollFreeCountries\":[\"US\"],\"allowedTollFreeCountries\":[\"AE\",\"AR\",\"AT\",\"AU\",\"BE\",\"BG\",\"BH\",\"BR\",\"BY\",\"CA\",\"CH\",\"CL\",\"CN\",\"CO\",\"CR\",\"CZ\",\"DE\",\"DK\",\"ES\",\"FI\",\"FR\",\"GB\",\"GR\",\"HK\",\"HU\",\"ID\",\"IE\",\"IL\",\"IN\",\"IS\",\"IT\",\"JP\",\"KR\",\"LU\",\"MX\",\"MY\",\"NL\",\"NO\",\"NZ\",\"PA\",\"PE\",\"PH\",\"PL\",\"PT\",\"RO\",\"RU\",\"SA\",\"SE\",\"SG\",\"SK\",\"TH\",\"TR\",\"TW\",\"UA\",\"US\",\"UY\",\"VN\",\"ZA\"],\"dialOutCountries\":[\"AE\",\"AR\",\"AT\",\"AU\",\"BE\",\"BG\",\"BH\",\"BR\",\"BY\",\"CA\",\"CH\",\"CL\",\"CN\",\"CO\",\"CR\",\"CZ\",\"DE\",\"DK\",\"EG\",\"ES\",\"FI\",\"FR\",\"GB\",\"GR\",\"HK\",\"HU\",\"ID\",\"IE\",\"IL\",\"IN\",\"IS\",\"IT\",\"JP\",\"KR\",\"KW\",\"LU\",\"MX\",\"MY\",\"NL\",\"NO\",\"NZ\",\"OM\",\"PA\",\"PE\",\"PH\",\"PK\",\"PL\",\"PT\",\"QA\",\"RO\",\"RU\",\"SA\",\"SE\",\"SG\",\"TH\",\"TR\",\"TW\",\"UA\",\"US\",\"UY\",\"ZA\"],\"allowedDialOutCountries\":[\"AE\",\"AR\",\"AT\",\"AU\",\"BE\",\"BG\",\"BH\",\"BR\",\"BY\",\"CA\",\"CH\",\"CL\",\"CN\",\"CO\",\"CR\",\"CZ\",\"DE\",\"DK\",\"EG\",\"ES\",\"FI\",\"FR\",\"GB\",\"GR\",\"HK\",\"HU\",\"ID\",\"IE\",\"IL\",\"IN\",\"IS\",\"IT\",\"JP\",\"KR\",\"KW\",\"LU\",\"MX\",\"MY\",\"NL\",\"NO\",\"NZ\",\"OM\",\"PA\",\"PE\",\"PH\",\"PK\",\"PL\",\"PT\",\"QA\",\"RO\",\"RU\",\"SA\",\"SE\",\"SG\",\"TH\",\"TR\",\"TW\",\"UA\",\"US\",\"UY\",\"ZA\"],\"attendeeListEnabled\":true,\"keyboardMouseControlEnabled\":true,\"chatEnabled\":true,\"recordingEnabled\":true,\"webcamEnabled\":true,\"webViewerAccessible\":true,\"webViewerEnabled\":false,\"onlineRecordingAccessible\":true,\"onlineRecordingEnabled\":true,\"onlineRecordingTranscriptsAccessible\":false,\"onlineRecordingTranscriptsEnabled\":false,\"standaloneAudioAccessible\":true,\"standaloneAudioEnabled\":true,\"openMeetingsAccessible\":true,\"openMeetingsEnabled\":true,\"ux2019Accessible\":true,\"ux2019Enabled\":true,\"meetingHubEnabled\":true,\"meetingHubAccessible\":true,\"npaEnabled\":true,\"npaConfirmationDialogEnabled\":false,\"npaSameAccountRestrictionEnabled\":false,\"roomSystemDualDisplayEnabled\":true},\"G2MFREE\":{\"attendeeListEnabled\":true,\"chatEnabled\":true}},\"passwordCreated\":false,\"invitedDate\":1594152350059,\"nameLocked\":false,\"emailLocked\":false,\"identityReadOnly\":false,\"canAuthenticate\":false,\"status\":\"SUSPENDED\",\"inviteCount\":1}";
+        prepareMockResponse(responseData, responseData);
         Set<Attribute> attributes = new HashSet<>();
         attributes.add(new AttributeBuilder().setName(GotoMeetingUserAttribute.FIRST_NAME.name()).addValue("Wilma").build());
 
@@ -135,7 +136,7 @@ public class GotoMeetingConnectorTest extends ConnectorMockRestTest {
 
     @Test
     public void test220GroupModify() {
-        prepareMockResponseEmpty();
+        prepareMockResponse();
         Set<Attribute> attributes = new HashSet<>();
         attributes.add(new AttributeBuilder().setName(GotoMeetingGroupAttribute.GROUP_NAME.name()).addValue("Flinstones2").build());
 
@@ -174,13 +175,13 @@ public class GotoMeetingConnectorTest extends ConnectorMockRestTest {
 
     @Test
     public void test290GroupDelete() {
-        prepareMockResponseEmpty();
+        prepareMockResponse();
         connector.delete(ObjectClass.GROUP, new Uid("1234"), new OperationOptionsBuilder().build());
     }
 
     @Test
     public void test390UserDelete() {
-        prepareMockResponseEmpty();
+        prepareMockResponse();
         connector.delete(ObjectClass.ACCOUNT, new Uid("1234"), new OperationOptionsBuilder().build());
     }
 
