@@ -49,23 +49,19 @@ resource configuration setup for Midpoint.
 
 ## Configuration properties
 
-- See src/test/resources/testConfiguration.properties for an example
+- CONNECTOR_BASE_CONFIGURATION_ACTIVE - Set this to Y to activate the configuration
 
-- exclamationlabs.connector.gotomeeting.token.api.path - Currently is https://api.getgo.com/oauth/v2/token and not likely to change often
+- CONNECTOR_BASE_AUTH_OAUTH2_TOKEN_URL - Currently is https://api.getgo.com/oauth/v2/token and not likely to change often
+ 
+- CONNECTOR_BASE_AUTH_OAUTH2_USERNAME - The user ID for your developer account.
 
-- exclamationlabs.connector.gotomeeting.consumer.key - The Consumer Key for your Goto Meeting App.  Visible in your App via the Developer Center.
+- CONNECTOR_BASE_AUTH_OAUTH2_PASSWORD - The password for your developer account.
 
-- exclamationlabs.connector.gotomeeting.consumer.secret - The Consumer Secret for your Goto Meeting App.  Visible in your App via the Developer Center.
+- CONNECTOR_BASE_AUTH_OAUTH2_ENCODED_SECRET - base64 encoded version of `Client Key`:`Client Secret`
 
-- exclamationlabs.connector.gotomeeting.user.id - The user ID for your developer account.
+- CONNECTOR_GOTO_MEETING_ACCOUNT_KEY - Account Key for your developer GotoMeeting account, visible from
+ the Goto Meeting Admin Web UI.
 
-- exclamationlabs.connector.gotomeeting.user.password - The password for your developer account.
-
-- exclamationlabs.connector.gotomeeting.admin.api.path - Currently is https://api.getgo.com/admin/rest/v1
-and not likely to change often.
-
-- exclamationlabs.connector.gotomeeting.account.key - Account Key for your developer GotoMeeting account, visible from
-the Goto Meeting Admin Web UI.
 
 
 
