@@ -49,17 +49,17 @@ resource configuration setup for Midpoint.
 
 ## Configuration properties
 
-- CONNECTOR_BASE_CONFIGURATION_ACTIVE - Set this to Y to activate the configuration
+- service.serviceUrl - - Currently is `https://api.getgo.com/admin/rest/v1/accounts/` and not likely to change often
 
-- CONNECTOR_BASE_AUTH_OAUTH2_TOKEN_URL - Currently is https://api.getgo.com/oauth/v2/token and not likely to change often
+- security.authenticator.oauth2Password.tokenUrl - Currently is `https://api.getgo.com/oauth/v2/token` and not likely to change often
  
-- CONNECTOR_BASE_AUTH_OAUTH2_USERNAME - The user ID for your developer account.
+- security.authenticator.oauth2Password.oauth2Username - The user ID for your developer account.
 
-- CONNECTOR_BASE_AUTH_OAUTH2_PASSWORD - The password for your developer account.
+- security.authenticator.oauth2Password.oauth2Password - The password for your developer account.
 
-- CONNECTOR_BASE_AUTH_OAUTH2_ENCODED_SECRET - base64 encoded version of `Client Key`:`Client Secret`
+- security.authenticator.oauth2Password.encodedSecret - base64 encoded version of `Client Key`:`Client Secret`
 
-- CONNECTOR_GOTO_MEETING_ACCOUNT_KEY - Account Key for your developer GotoMeeting account, visible from
+- custom.accountKey - Account Key for your developer GotoMeeting account, visible from
  the Goto Meeting Admin Web UI.
 
 

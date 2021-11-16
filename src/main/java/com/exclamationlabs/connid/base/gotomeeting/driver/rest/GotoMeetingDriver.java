@@ -13,7 +13,6 @@
 
 package com.exclamationlabs.connid.base.gotomeeting.driver.rest;
 
-import com.exclamationlabs.connid.base.connector.configuration.ConnectorProperty;
 import com.exclamationlabs.connid.base.connector.driver.rest.BaseRestDriver;
 import com.exclamationlabs.connid.base.connector.driver.rest.RestFaultProcessor;
 import com.exclamationlabs.connid.base.connector.driver.rest.RestResponseData;
@@ -23,9 +22,7 @@ import com.exclamationlabs.connid.base.gotomeeting.model.GotoMeetingUser;
 import com.exclamationlabs.connid.base.gotomeeting.util.GotoMeetingFaultProcessor;
 import org.identityconnectors.framework.common.exceptions.ConnectorException;
 
-import java.util.Set;
-
-public class GotoMeetingDriver extends BaseRestDriver {
+public class GotoMeetingDriver extends BaseRestDriver<GotoMeetingConfiguration> {
 
     public GotoMeetingDriver() {
         super();
@@ -40,18 +37,16 @@ public class GotoMeetingDriver extends BaseRestDriver {
 
     @Override
     protected String getBaseServiceUrl() {
-        return "https://api.getgo.com/admin/rest/v1/accounts/" +
-                configuration.getProperty(GotoMeetingConfiguration.ACCOUNT_KEY);
+        return configuration.getServiceUrl();
+    }
+
+    String getAccountUrl() {
+        return configuration.getAccountKey();
     }
 
     @Override
     protected boolean usesBearerAuthorization() {
         return true;
-    }
-
-    @Override
-    public Set<ConnectorProperty> getRequiredPropertyNames() {
-        return null;
     }
 
     @Override

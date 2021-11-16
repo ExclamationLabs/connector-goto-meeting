@@ -14,6 +14,8 @@
 package com.exclamationlabs.connid.base.gotomeeting.driver.rest;
 
 import com.exclamationlabs.connid.base.connector.driver.DriverInvocator;
+import com.exclamationlabs.connid.base.connector.results.ResultsFilter;
+import com.exclamationlabs.connid.base.connector.results.ResultsPaginator;
 import com.exclamationlabs.connid.base.gotomeeting.model.GotoMeetingUser;
 import com.exclamationlabs.connid.base.gotomeeting.model.request.UserCreationRequest;
 import com.exclamationlabs.connid.base.gotomeeting.model.response.ListUsersResponse;
@@ -29,7 +31,7 @@ public class GotoMeetingUserInvocator implements DriverInvocator<GotoMeetingDriv
         UserCreationRequest requestData = new UserCreationRequest();
         requestData.setUsers(new ArrayList<>());
         requestData.getUsers().add(userModel);
-        GotoMeetingUser[] newUsers = driver.executePostRequest("/users?allOrNothing=false",
+        GotoMeetingUser[] newUsers = driver.executePostRequest(driver.getAccountUrl() + "/users?allOrNothing=false",
                 GotoMeetingUser[].class, requestData).getResponseObject();
 
         if (newUsers == null || newUsers.length == 0) {
@@ -43,7 +45,7 @@ public class GotoMeetingUserInvocator implements DriverInvocator<GotoMeetingDriv
         String userKey = userModel.getKey();
         userModel.setKey(null); // cannot pass key value in update JSON, can only be present in URL
 
-        driver.executePutRequest("/users/" + userKey + "?allOrNothing=true", null, userModel);
+        driver.executePutRequest(driver.getAccountUrl() + "/users/" + userKey + "?allOrNothing=true", null, userModel);
 
         String newGroupId = userModel.getGroupKey();
 
@@ -63,28 +65,29 @@ public class GotoMeetingUserInvocator implements DriverInvocator<GotoMeetingDriv
 
     @Override
     public void delete(GotoMeetingDriver driver, String userId) throws ConnectorException {
-        driver.executeDeleteRequest("/users/" + userId, null);
+        driver.executeDeleteRequest(driver.getAccountUrl() + "/users/" + userId, null);
     }
 
     @Override
-    public List<GotoMeetingUser> getAll(GotoMeetingDriver driver, Map<String, Object> map) throws ConnectorException {
-        ListUsersResponse response = driver.executeGetRequest("/users", ListUsersResponse.class).getResponseObject();
+    public Set<GotoMeetingUser> getAll(GotoMeetingDriver driver, ResultsFilter filter,
+                                        ResultsPaginator paginator, Integer max) throws ConnectorException {
+        ListUsersResponse response = driver.executeGetRequest(driver.getAccountUrl() + "/users", ListUsersResponse.class).getResponseObject();
         return response.getResults();
     }
 
     @Override
     public GotoMeetingUser getOne(GotoMeetingDriver driver, String userId, Map<String, Object> map) throws ConnectorException {
-        return driver.executeGetRequest("/users/" + userId, GotoMeetingUser.class).getResponseObject();
+        return driver.executeGetRequest(driver.getAccountUrl() + "/users/" + userId, GotoMeetingUser.class).getResponseObject();
     }
 
     private void addGroupToUser(GotoMeetingDriver driver, String groupId, String userId) throws ConnectorException {
-        driver.executePutRequest("/groups/" + groupId + "/users/" + userId,
+        driver.executePutRequest(driver.getAccountUrl() + "/groups/" + groupId + "/users/" + userId,
                 null, null);
     }
 
     private void removeGroupFromUser(GotoMeetingDriver driver, String userId) throws ConnectorException {
         // Note: GotoMeeting only seems to support removing a user from ALL groups it
         // currently belongs to.  So that is the logic that is invoked here.
-        driver.executeDeleteRequest("/users/" + userId + "/groups", null);
+        driver.executeDeleteRequest(driver.getAccountUrl() + "/users/" + userId + "/groups", null);
     }
 }

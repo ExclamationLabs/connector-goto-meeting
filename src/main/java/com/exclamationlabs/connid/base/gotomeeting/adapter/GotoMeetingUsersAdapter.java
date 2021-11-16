@@ -16,11 +16,11 @@ package com.exclamationlabs.connid.base.gotomeeting.adapter;
 import com.exclamationlabs.connid.base.connector.adapter.AdapterValueTypeConverter;
 import com.exclamationlabs.connid.base.connector.adapter.BaseAdapter;
 import com.exclamationlabs.connid.base.connector.attribute.ConnectorAttribute;
+import com.exclamationlabs.connid.base.gotomeeting.configuration.GotoMeetingConfiguration;
 import com.exclamationlabs.connid.base.gotomeeting.model.GotoMeetingUser;
 import org.identityconnectors.framework.common.objects.*;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.util.HashSet;
 import java.util.Set;
 
 import static com.exclamationlabs.connid.base.connector.attribute.ConnectorAttributeDataType.*;
@@ -29,7 +29,7 @@ import static com.exclamationlabs.connid.base.gotomeeting.attribute.GotoMeetingU
 import static org.identityconnectors.framework.common.objects.AttributeInfo.Flags.MULTIVALUED;
 import static org.identityconnectors.framework.common.objects.AttributeInfo.Flags.NOT_UPDATEABLE;
 
-public class GotoMeetingUsersAdapter extends BaseAdapter<GotoMeetingUser> {
+public class GotoMeetingUsersAdapter extends BaseAdapter<GotoMeetingUser, GotoMeetingConfiguration> {
 
     @Override
     public ObjectClass getType() {
@@ -42,8 +42,8 @@ public class GotoMeetingUsersAdapter extends BaseAdapter<GotoMeetingUser> {
     }
 
     @Override
-    public List<ConnectorAttribute> getConnectorAttributes() {
-        List<ConnectorAttribute> result = new ArrayList<>();
+    public Set<ConnectorAttribute> getConnectorAttributes() {
+        Set<ConnectorAttribute> result = new HashSet<>();
 
         result.add(new ConnectorAttribute(USER_KEY.name(), STRING, NOT_UPDATEABLE));
         result.add(new ConnectorAttribute(FIRST_NAME.name(), STRING));
@@ -69,8 +69,8 @@ public class GotoMeetingUsersAdapter extends BaseAdapter<GotoMeetingUser> {
     }
 
     @Override
-    protected List<Attribute> constructAttributes(GotoMeetingUser user) {
-        List<Attribute> attributes = new ArrayList<>();
+    protected Set<Attribute> constructAttributes(GotoMeetingUser user) {
+        Set<Attribute> attributes = new HashSet<>();
         attributes.add(AttributeBuilder.build(USER_KEY.name(), user.getKey()));
         attributes.add(AttributeBuilder.build(EMAIL.name(), user.getEmail()));
         attributes.add(AttributeBuilder.build(FIRST_NAME.name(), user.getFirstName()));
@@ -92,7 +92,10 @@ public class GotoMeetingUsersAdapter extends BaseAdapter<GotoMeetingUser> {
     }
 
     @Override
-    protected GotoMeetingUser constructModel(Set<Attribute> attributes, boolean isCreation) {
+    protected GotoMeetingUser constructModel(Set<Attribute> attributes,
+                                             Set<Attribute> multiValueAdd,
+                                             Set<Attribute> multiValueModify,
+                                             boolean isCreation) {
         GotoMeetingUser user = new GotoMeetingUser();
         user.setKey(AdapterValueTypeConverter.getIdentityIdAttributeValue(attributes));
 

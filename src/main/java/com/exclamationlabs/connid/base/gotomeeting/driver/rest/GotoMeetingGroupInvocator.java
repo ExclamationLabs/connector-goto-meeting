@@ -14,18 +14,20 @@
 package com.exclamationlabs.connid.base.gotomeeting.driver.rest;
 
 import com.exclamationlabs.connid.base.connector.driver.DriverInvocator;
+import com.exclamationlabs.connid.base.connector.results.ResultsFilter;
+import com.exclamationlabs.connid.base.connector.results.ResultsPaginator;
 import com.exclamationlabs.connid.base.gotomeeting.model.GotoMeetingGroup;
 import com.exclamationlabs.connid.base.gotomeeting.model.response.ListGroupsResponse;
 import org.identityconnectors.framework.common.exceptions.ConnectorException;
 
-import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 public class GotoMeetingGroupInvocator implements DriverInvocator<GotoMeetingDriver, GotoMeetingGroup> {
 
     @Override
     public String create(GotoMeetingDriver driver, GotoMeetingGroup groupModel) throws ConnectorException {
-        return driver.executePostRequest("/groups", String.class, groupModel).getResponseObject();
+        return driver.executePostRequest(driver.getAccountUrl() + "/groups", String.class, groupModel).getResponseObject();
     }
 
     @Override
@@ -35,22 +37,23 @@ public class GotoMeetingGroupInvocator implements DriverInvocator<GotoMeetingDri
         // so create a new object w/ just the name set
         modifyGroup.setName(groupModel.getName());
 
-        driver.executePutRequest("/groups/" + groupModel.getKey(), null, modifyGroup);
+        driver.executePutRequest(driver.getAccountUrl() + "/groups/" + groupModel.getKey(), null, modifyGroup);
     }
 
     @Override
     public void delete(GotoMeetingDriver driver, String groupId) throws ConnectorException {
-        driver.executeDeleteRequest("/groups/" + groupId, null);
+        driver.executeDeleteRequest(driver.getAccountUrl() + "/groups/" + groupId, null);
     }
 
     @Override
-    public List<GotoMeetingGroup> getAll(GotoMeetingDriver driver, Map<String, Object> map) throws ConnectorException {
-        ListGroupsResponse response = driver.executeGetRequest("/groups", ListGroupsResponse.class).getResponseObject();
+    public Set<GotoMeetingGroup> getAll(GotoMeetingDriver driver, ResultsFilter filter,
+                                        ResultsPaginator paginator, Integer max) throws ConnectorException {
+        ListGroupsResponse response = driver.executeGetRequest(driver.getAccountUrl() + "/groups", ListGroupsResponse.class).getResponseObject();
         return response.getResults();
     }
 
     @Override
     public GotoMeetingGroup getOne(GotoMeetingDriver driver, String groupId, Map<String, Object> map) throws ConnectorException {
-        return driver.executeGetRequest("/groups/" + groupId, GotoMeetingGroup.class).getResponseObject();
+        return driver.executeGetRequest(driver.getAccountUrl() + "/groups/" + groupId, GotoMeetingGroup.class).getResponseObject();
     }
 }

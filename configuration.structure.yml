@@ -1,0 +1,19 @@
+---
+name: 'GotoMeeting'
+configurationClass:
+  name: 'GotoMeetingConfiguration'
+  package: 'com.exclamationlabs.connid.base.gotomeeting.configuration'
+rest: true # io-error-retries
+service: true # service-url
+security:
+  authenticator:
+    oauth2Password: true
+custom:
+  items:
+    required:
+      accountKey:
+        type: string
+        display: 'Account Key'
+        help: 'Account Key for your GotoMeeting account'
+
+

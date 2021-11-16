@@ -58,8 +58,12 @@ public class GotoMeetingConnectorTest extends ConnectorMockRestTest {
             }
         };
         GotoMeetingConfiguration configuration = new GotoMeetingConfiguration();
-        configuration.setTestConfiguration();
-        configuration.setProperty("CONNECTOR_GOTO_MEETING_ACCOUNT_KEY", "test");
+        configuration.setAccountKey("test");
+        configuration.setTokenUrl("test");
+        configuration.setServiceUrl("test");
+        configuration.setEncodedSecret("test");
+        configuration.setOauth2Username("test");
+        configuration.setOauth2Password("test");
         connector.init(configuration);
     }
 
@@ -84,12 +88,13 @@ public class GotoMeetingConnectorTest extends ConnectorMockRestTest {
     public void test120UserModify() {
         String responseData = "{\"key\":\"6581286685341855244\",\"email\":\"fred@rubble.com\",\"firstName\":\"Fred\",\"lastName\":\"Flinstone\",\"locale\":\"en_US\",\"timeZone\":\"America/Los_Angeles\",\"settings\":{\"G2M\":{\"tollAccessible\":true,\"tollEnabled\":true,\"voipAccessible\":true,\"voipEnabled\":true,\"privateConfCallAccessible\":true,\"privateConfCallEnabled\":false,\"tollFreeAccessible\":true,\"tollFreeEnabled\":true,\"dialOutAccessible\":true,\"dialOutEnabled\":true,\"tollCountries\":[\"US\"],\"allowedTollCountries\":[\"AT\",\"AU\",\"BE\",\"BG\",\"BR\",\"CA\",\"CH\",\"CL\",\"CO\",\"CZ\",\"DE\",\"DK\",\"ES\",\"FI\",\"FR\",\"GB\",\"GR\",\"HU\",\"IE\",\"IL\",\"IT\",\"LU\",\"MX\",\"MY\",\"NL\",\"NO\",\"NZ\",\"PA\",\"PE\",\"RO\",\"SE\",\"TR\",\"US\",\"ZA\"],\"tollFreeCountries\":[\"US\"],\"allowedTollFreeCountries\":[\"AE\",\"AR\",\"AT\",\"AU\",\"BE\",\"BG\",\"BH\",\"BR\",\"BY\",\"CA\",\"CH\",\"CL\",\"CN\",\"CO\",\"CR\",\"CZ\",\"DE\",\"DK\",\"ES\",\"FI\",\"FR\",\"GB\",\"GR\",\"HK\",\"HU\",\"ID\",\"IE\",\"IL\",\"IN\",\"IS\",\"IT\",\"JP\",\"KR\",\"LU\",\"MX\",\"MY\",\"NL\",\"NO\",\"NZ\",\"PA\",\"PE\",\"PH\",\"PL\",\"PT\",\"RO\",\"RU\",\"SA\",\"SE\",\"SG\",\"SK\",\"TH\",\"TR\",\"TW\",\"UA\",\"US\",\"UY\",\"VN\",\"ZA\"],\"dialOutCountries\":[\"AE\",\"AR\",\"AT\",\"AU\",\"BE\",\"BG\",\"BH\",\"BR\",\"BY\",\"CA\",\"CH\",\"CL\",\"CN\",\"CO\",\"CR\",\"CZ\",\"DE\",\"DK\",\"EG\",\"ES\",\"FI\",\"FR\",\"GB\",\"GR\",\"HK\",\"HU\",\"ID\",\"IE\",\"IL\",\"IN\",\"IS\",\"IT\",\"JP\",\"KR\",\"KW\",\"LU\",\"MX\",\"MY\",\"NL\",\"NO\",\"NZ\",\"OM\",\"PA\",\"PE\",\"PH\",\"PK\",\"PL\",\"PT\",\"QA\",\"RO\",\"RU\",\"SA\",\"SE\",\"SG\",\"TH\",\"TR\",\"TW\",\"UA\",\"US\",\"UY\",\"ZA\"],\"allowedDialOutCountries\":[\"AE\",\"AR\",\"AT\",\"AU\",\"BE\",\"BG\",\"BH\",\"BR\",\"BY\",\"CA\",\"CH\",\"CL\",\"CN\",\"CO\",\"CR\",\"CZ\",\"DE\",\"DK\",\"EG\",\"ES\",\"FI\",\"FR\",\"GB\",\"GR\",\"HK\",\"HU\",\"ID\",\"IE\",\"IL\",\"IN\",\"IS\",\"IT\",\"JP\",\"KR\",\"KW\",\"LU\",\"MX\",\"MY\",\"NL\",\"NO\",\"NZ\",\"OM\",\"PA\",\"PE\",\"PH\",\"PK\",\"PL\",\"PT\",\"QA\",\"RO\",\"RU\",\"SA\",\"SE\",\"SG\",\"TH\",\"TR\",\"TW\",\"UA\",\"US\",\"UY\",\"ZA\"],\"attendeeListEnabled\":true,\"keyboardMouseControlEnabled\":true,\"chatEnabled\":true,\"recordingEnabled\":true,\"webcamEnabled\":true,\"webViewerAccessible\":true,\"webViewerEnabled\":false,\"onlineRecordingAccessible\":true,\"onlineRecordingEnabled\":true,\"onlineRecordingTranscriptsAccessible\":false,\"onlineRecordingTranscriptsEnabled\":false,\"standaloneAudioAccessible\":true,\"standaloneAudioEnabled\":true,\"openMeetingsAccessible\":true,\"openMeetingsEnabled\":true,\"ux2019Accessible\":true,\"ux2019Enabled\":true,\"meetingHubEnabled\":true,\"meetingHubAccessible\":true,\"npaEnabled\":true,\"npaConfirmationDialogEnabled\":false,\"npaSameAccountRestrictionEnabled\":false,\"roomSystemDualDisplayEnabled\":true},\"G2MFREE\":{\"attendeeListEnabled\":true,\"chatEnabled\":true}},\"passwordCreated\":false,\"invitedDate\":1594152350059,\"nameLocked\":false,\"emailLocked\":false,\"identityReadOnly\":false,\"canAuthenticate\":false,\"status\":\"SUSPENDED\",\"inviteCount\":1}";
         prepareMockResponse(responseData, responseData);
-        Set<Attribute> attributes = new HashSet<>();
-        attributes.add(new AttributeBuilder().setName(GotoMeetingUserAttribute.FIRST_NAME.name()).addValue("Wilma").build());
+        Set<AttributeDelta> attributes = new HashSet<>();
+        attributes.add(new AttributeDeltaBuilder().setName(
+                GotoMeetingUserAttribute.FIRST_NAME.name()).addValueToReplace("Wilma").build());
 
-        Uid newId = connector.update(ObjectClass.ACCOUNT, new Uid("1234"), attributes, new OperationOptionsBuilder().build());
-        assertNotNull(newId);
-        assertNotNull(newId.getUidValue());
+        Set<AttributeDelta> response = connector.updateDelta(ObjectClass.ACCOUNT, new Uid("1234"), attributes, new OperationOptionsBuilder().build());
+        assertNotNull(response);
+        assertTrue(response.isEmpty());
     }
 
     @Test
@@ -137,12 +142,13 @@ public class GotoMeetingConnectorTest extends ConnectorMockRestTest {
     @Test
     public void test220GroupModify() {
         prepareMockResponse();
-        Set<Attribute> attributes = new HashSet<>();
-        attributes.add(new AttributeBuilder().setName(GotoMeetingGroupAttribute.GROUP_NAME.name()).addValue("Flinstones2").build());
+        Set<AttributeDelta> attributes = new HashSet<>();
+        attributes.add(new AttributeDeltaBuilder().setName(
+                GotoMeetingGroupAttribute.GROUP_NAME.name()).addValueToReplace("Flinstones2").build());
 
-        Uid newId = connector.update(ObjectClass.GROUP, new Uid("1234"), attributes, new OperationOptionsBuilder().build());
-        assertNotNull(newId);
-        assertNotNull(newId.getUidValue());
+        Set<AttributeDelta> response = connector.updateDelta(ObjectClass.GROUP, new Uid("1234"), attributes, new OperationOptionsBuilder().build());
+        assertNotNull(response);
+        assertTrue(response.isEmpty());
     }
 
     @Test

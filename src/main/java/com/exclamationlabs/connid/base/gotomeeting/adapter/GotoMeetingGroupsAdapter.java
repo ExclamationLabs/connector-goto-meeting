@@ -16,13 +16,13 @@ package com.exclamationlabs.connid.base.gotomeeting.adapter;
 import com.exclamationlabs.connid.base.connector.adapter.AdapterValueTypeConverter;
 import com.exclamationlabs.connid.base.connector.adapter.BaseAdapter;
 import com.exclamationlabs.connid.base.connector.attribute.ConnectorAttribute;
+import com.exclamationlabs.connid.base.gotomeeting.configuration.GotoMeetingConfiguration;
 import com.exclamationlabs.connid.base.gotomeeting.model.GotoMeetingGroup;
 import org.identityconnectors.framework.common.objects.Attribute;
 import org.identityconnectors.framework.common.objects.AttributeBuilder;
 import org.identityconnectors.framework.common.objects.ObjectClass;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.util.HashSet;
 import java.util.Set;
 
 import static com.exclamationlabs.connid.base.connector.attribute.ConnectorAttributeDataType.INTEGER;
@@ -30,7 +30,7 @@ import static com.exclamationlabs.connid.base.connector.attribute.ConnectorAttri
 import static com.exclamationlabs.connid.base.gotomeeting.attribute.GotoMeetingGroupAttribute.*;
 import static org.identityconnectors.framework.common.objects.AttributeInfo.Flags.*;
 
-public class GotoMeetingGroupsAdapter extends BaseAdapter<GotoMeetingGroup> {
+public class GotoMeetingGroupsAdapter extends BaseAdapter<GotoMeetingGroup, GotoMeetingConfiguration> {
 
     @Override
     public ObjectClass getType() {
@@ -43,8 +43,8 @@ public class GotoMeetingGroupsAdapter extends BaseAdapter<GotoMeetingGroup> {
     }
 
     @Override
-    public List<ConnectorAttribute> getConnectorAttributes() {
-        List<ConnectorAttribute> result = new ArrayList<>();
+    public Set<ConnectorAttribute> getConnectorAttributes() {
+        Set<ConnectorAttribute> result = new HashSet<>();
         result.add(new ConnectorAttribute(GROUP_KEY.name(), STRING, NOT_UPDATEABLE));
         result.add(new ConnectorAttribute(GROUP_NAME.name(), STRING, REQUIRED));
         result.add(new ConnectorAttribute(KEY_PATH.name(), STRING, NOT_UPDATEABLE));
@@ -55,8 +55,8 @@ public class GotoMeetingGroupsAdapter extends BaseAdapter<GotoMeetingGroup> {
     }
 
     @Override
-    protected List<Attribute> constructAttributes(GotoMeetingGroup group) {
-        List<Attribute> attributes = new ArrayList<>();
+    protected Set<Attribute> constructAttributes(GotoMeetingGroup group) {
+        Set<Attribute> attributes = new HashSet<>();
         attributes.add(AttributeBuilder.build(GROUP_KEY.name(), group.getKey()));
         attributes.add(AttributeBuilder.build(GROUP_NAME.name(), group.getName()));
         attributes.add(AttributeBuilder.build(KEY_PATH.name(), group.getKeyPath()));
@@ -67,7 +67,10 @@ public class GotoMeetingGroupsAdapter extends BaseAdapter<GotoMeetingGroup> {
     }
 
     @Override
-    protected GotoMeetingGroup constructModel(Set<Attribute> attributes, boolean isCreation) {
+    protected GotoMeetingGroup constructModel(Set<Attribute> attributes,
+                                              Set<Attribute> multiValueAdd,
+                                              Set<Attribute> multiValueRemove,
+                                              boolean isCreation) {
         GotoMeetingGroup group = new GotoMeetingGroup();
         group.setKey(AdapterValueTypeConverter.getIdentityIdAttributeValue(attributes));
 
