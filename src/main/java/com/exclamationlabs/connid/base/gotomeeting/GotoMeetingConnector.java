@@ -14,6 +14,7 @@
 package com.exclamationlabs.connid.base.gotomeeting;
 
 import com.exclamationlabs.connid.base.connector.BaseFullAccessConnector;
+import com.exclamationlabs.connid.base.connector.authenticator.Authenticator;
 import com.exclamationlabs.connid.base.connector.authenticator.OAuth2TokenPasswordAuthenticator;
 import com.exclamationlabs.connid.base.gotomeeting.adapter.GotoMeetingGroupsAdapter;
 import com.exclamationlabs.connid.base.gotomeeting.adapter.GotoMeetingUsersAdapter;
@@ -23,11 +24,11 @@ import org.identityconnectors.framework.spi.ConnectorClass;
 
 @ConnectorClass(displayNameKey = "gotomeeting.connector.display",
         configurationClass = GotoMeetingConfiguration.class)
-public class GotoMeetingConnector extends BaseFullAccessConnector {
+public class GotoMeetingConnector extends BaseFullAccessConnector<GotoMeetingConfiguration> {
 
     public GotoMeetingConnector() {
-
-        setAuthenticator(new OAuth2TokenPasswordAuthenticator());
+        super(GotoMeetingConfiguration.class);
+        setAuthenticator((Authenticator) new OAuth2TokenPasswordAuthenticator());
         setDriver(new GotoMeetingDriver());
         setAdapters(new GotoMeetingUsersAdapter(), new GotoMeetingGroupsAdapter());
 

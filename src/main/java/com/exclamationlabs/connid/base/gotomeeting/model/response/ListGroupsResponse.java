@@ -18,20 +18,20 @@ package com.exclamationlabs.connid.base.gotomeeting.model.response;
 
 import com.exclamationlabs.connid.base.gotomeeting.model.GotoMeetingGroup;
 
-import java.util.List;
+import java.util.Set;
 
 public class ListGroupsResponse {
 
-    private List<GotoMeetingGroup> results;
+    private Set<GotoMeetingGroup> results;
     private Integer fromIndex;
     private Integer toIndex;
     private Integer total;
 
-    public List<GotoMeetingGroup> getResults() {
+    public Set<GotoMeetingGroup> getResults() {
         return results;
     }
 
-    public void setResults(List<GotoMeetingGroup> groups) {
+    public void setResults(Set<GotoMeetingGroup> groups) {
         this.results = groups;
     }
 

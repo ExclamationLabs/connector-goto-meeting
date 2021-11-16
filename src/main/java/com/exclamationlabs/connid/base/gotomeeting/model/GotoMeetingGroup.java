@@ -83,4 +83,13 @@ public class GotoMeetingGroup implements IdentityModel {
         this.totalMemberCount = totalMemberCount;
     }
 
+    @Override
+    public boolean equals(Object input) {
+        return identityEquals(GotoMeetingGroup.class, this, input);
+    }
+
+    @Override
+    public int hashCode() {
+        return identityHashCode();
+    }
 }

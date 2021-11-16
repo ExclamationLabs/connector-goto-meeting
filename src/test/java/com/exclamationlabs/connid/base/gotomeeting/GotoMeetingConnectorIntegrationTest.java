@@ -50,6 +50,11 @@ public class GotoMeetingConnectorIntegrationTest extends IntegrationTest {
     }
 
     @Test
+    public void test050Test() {
+        connector.test();
+    }
+
+    @Test
     public void test110UserCreate() {
         Set<Attribute> attributes = new HashSet<>();
         attributes.add(new AttributeBuilder().setName(GotoMeetingUserAttribute.FIRST_NAME.name()).addValue("Fred").build());
@@ -64,13 +69,15 @@ public class GotoMeetingConnectorIntegrationTest extends IntegrationTest {
 
     @Test
     public void test120UserModify() {
-        Set<Attribute> attributes = new HashSet<>();
-        attributes.add(new AttributeBuilder().setName(GotoMeetingUserAttribute.LAST_NAME.name()).addValue("Flinstone").build());
-        attributes.add(new AttributeBuilder().setName(GotoMeetingUserAttribute.USER_KEY.name()).addValue(generatedUserId).build());
+        Set<AttributeDelta> attributes = new HashSet<>();
+        attributes.add(new AttributeDeltaBuilder().setName(
+                GotoMeetingUserAttribute.LAST_NAME.name()).addValueToReplace("Flinstone").build());
+        attributes.add(new AttributeDeltaBuilder().setName(
+                GotoMeetingUserAttribute.USER_KEY.name()).addValueToReplace(generatedUserId).build());
 
-        Uid newId = connector.update(ObjectClass.ACCOUNT, new Uid(generatedUserId), attributes, new OperationOptionsBuilder().build());
-        assertNotNull(newId);
-        assertNotNull(newId.getUidValue());
+        Set<AttributeDelta> response = connector.updateDelta(ObjectClass.ACCOUNT, new Uid(generatedUserId), attributes, new OperationOptionsBuilder().build());
+        assertNotNull(response);
+        assertTrue(response.isEmpty());
     }
 
     @Test
@@ -110,13 +117,15 @@ public class GotoMeetingConnectorIntegrationTest extends IntegrationTest {
 
     @Test
     public void test220GroupModify() {
-        Set<Attribute> attributes = new HashSet<>();
-        attributes.add(new AttributeBuilder().setName(GotoMeetingGroupAttribute.GROUP_NAME.name()).addValue("Flinstones2").build());
-        attributes.add(new AttributeBuilder().setName(GotoMeetingGroupAttribute.GROUP_KEY.name()).addValue(generatedGroupId).build());
+        Set<AttributeDelta> attributes = new HashSet<>();
+        attributes.add(new AttributeDeltaBuilder().setName(
+                GotoMeetingGroupAttribute.GROUP_NAME.name()).addValueToReplace("Flinstones2").build());
+        attributes.add(new AttributeDeltaBuilder().setName(
+                GotoMeetingGroupAttribute.GROUP_KEY.name()).addValueToReplace(generatedGroupId).build());
 
-        Uid newId = connector.update(ObjectClass.GROUP, new Uid(generatedGroupId), attributes, new OperationOptionsBuilder().build());
-        assertNotNull(newId);
-        assertNotNull(newId.getUidValue());
+        Set<AttributeDelta> response = connector.updateDelta(ObjectClass.GROUP, new Uid(generatedGroupId), attributes, new OperationOptionsBuilder().build());
+        assertNotNull(response);
+        assertTrue(response.isEmpty());
     }
 
     @Test
@@ -145,24 +154,28 @@ public class GotoMeetingConnectorIntegrationTest extends IntegrationTest {
 
     @Test
     public void test260AddGroupToUser() {
-        Set<Attribute> attributes = new HashSet<>();
-        attributes.add(new AttributeBuilder().setName(GotoMeetingUserAttribute.USER_KEY.name()).addValue(generatedUserId).build());
-        attributes.add(new AttributeBuilder().setName(GotoMeetingUserAttribute.GROUP_IDS.name()).addValue(
+        Set<AttributeDelta> attributes = new HashSet<>();
+        attributes.add(new AttributeDeltaBuilder().setName(
+                GotoMeetingUserAttribute.USER_KEY.name()).addValueToReplace(generatedUserId).build());
+        attributes.add(new AttributeDeltaBuilder().setName(
+                GotoMeetingUserAttribute.GROUP_IDS.name()).addValueToReplace(
                 Collections.singletonList(generatedGroupId)).build());
-        Uid newId = connector.update(ObjectClass.ACCOUNT, new Uid(generatedUserId), attributes, new OperationOptionsBuilder().build());
-        assertNotNull(newId);
-        assertNotNull(newId.getUidValue());
+        Set<AttributeDelta> response = connector.updateDelta(ObjectClass.ACCOUNT, new Uid(generatedUserId), attributes, new OperationOptionsBuilder().build());
+        assertNotNull(response);
+        assertTrue(response.isEmpty());
     }
 
     @Test
     public void test270RemoveGroupFromUser() {
-        Set<Attribute> attributes = new HashSet<>();
-        attributes.add(new AttributeBuilder().setName(GotoMeetingUserAttribute.USER_KEY.name()).addValue(generatedUserId).build());
-        attributes.add(new AttributeBuilder().setName(GotoMeetingUserAttribute.GROUP_IDS.name()).addValue(
+        Set<AttributeDelta> attributes = new HashSet<>();
+        attributes.add(new AttributeDeltaBuilder().setName(
+                GotoMeetingUserAttribute.USER_KEY.name()).addValueToReplace(generatedUserId).build());
+        attributes.add(new AttributeDeltaBuilder().setName(
+                GotoMeetingUserAttribute.GROUP_IDS.name()).addValueToReplace(
                 Collections.EMPTY_LIST).build());
-        Uid newId = connector.update(ObjectClass.ACCOUNT, new Uid(generatedUserId), attributes, new OperationOptionsBuilder().build());
-        assertNotNull(newId);
-        assertNotNull(newId.getUidValue());
+        Set<AttributeDelta> response = connector.updateDelta(ObjectClass.ACCOUNT, new Uid(generatedUserId), attributes, new OperationOptionsBuilder().build());
+        assertNotNull(response);
+        assertTrue(response.isEmpty());
     }
 
     @Test

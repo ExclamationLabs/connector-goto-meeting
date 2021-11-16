@@ -210,4 +210,14 @@ public class GotoMeetingUser implements IdentityModel {
     public void setInviteCount(Integer inviteCount) {
         this.inviteCount = inviteCount;
     }
+
+    @Override
+    public boolean equals(Object input) {
+        return identityEquals(GotoMeetingUser.class, this, input);
+    }
+
+    @Override
+    public int hashCode() {
+        return identityHashCode();
+    }
 }
