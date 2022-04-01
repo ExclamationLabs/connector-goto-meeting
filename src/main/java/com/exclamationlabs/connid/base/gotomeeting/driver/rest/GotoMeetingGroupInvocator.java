@@ -20,6 +20,8 @@ import com.exclamationlabs.connid.base.gotomeeting.model.GotoMeetingGroup;
 import com.exclamationlabs.connid.base.gotomeeting.model.response.ListGroupsResponse;
 import org.identityconnectors.framework.common.exceptions.ConnectorException;
 
+import java.io.UnsupportedEncodingException;
+import java.net.URLEncoder;
 import java.util.Map;
 import java.util.Set;
 
@@ -48,12 +50,39 @@ public class GotoMeetingGroupInvocator implements DriverInvocator<GotoMeetingDri
     @Override
     public Set<GotoMeetingGroup> getAll(GotoMeetingDriver driver, ResultsFilter filter,
                                         ResultsPaginator paginator, Integer max) throws ConnectorException {
-        ListGroupsResponse response = driver.executeGetRequest(driver.getAccountUrl() + "/groups", ListGroupsResponse.class).getResponseObject();
+        String additionalQueryString = "?" + GotoMeetingDriver.getPaginationString(paginator);
+        additionalQueryString += getGroupFilterQueryString(filter);
+
+        ListGroupsResponse response = driver.executeGetRequest(driver.getAccountUrl() + "/groups" +
+                additionalQueryString, ListGroupsResponse.class).getResponseObject();
         return response.getResults();
     }
 
     @Override
     public GotoMeetingGroup getOne(GotoMeetingDriver driver, String groupId, Map<String, Object> map) throws ConnectorException {
         return driver.executeGetRequest(driver.getAccountUrl() + "/groups/" + groupId, GotoMeetingGroup.class).getResponseObject();
+    }
+
+    private static String getGroupFilterQueryString(ResultsFilter filter) {
+        String response = "";
+        if (filter != null && filter.getAttribute() != null) {
+            try {
+                switch(filter.getAttribute()) {
+                    case "GROUP_KEY": response += "filter=(key=" +
+                            URLEncoder.encode(
+                                    "\"" + filter.getValue() + "\"", "UTF-8") + ")" ; break;
+                    case "GROUP_NAME":
+                        response += "filter=(name=" +
+                                URLEncoder.encode(
+                                        "\"" + filter.getValue() + "\"", "UTF-8") + ")" ; break;
+
+                    default: break;
+                }
+            } catch (UnsupportedEncodingException un) {
+                throw new ConnectorException(un);
+            }
+        }
+
+        return response;
     }
 }

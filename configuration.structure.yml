@@ -5,6 +5,7 @@ configurationClass:
   package: 'com.exclamationlabs.connid.base.gotomeeting.configuration'
 rest: true # io-error-retries
 service: true # service-url
+results: true
 security:
   authenticator:
     oauth2Password: true

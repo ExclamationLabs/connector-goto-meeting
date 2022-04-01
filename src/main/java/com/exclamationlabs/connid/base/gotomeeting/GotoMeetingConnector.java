@@ -18,9 +18,14 @@ import com.exclamationlabs.connid.base.connector.authenticator.Authenticator;
 import com.exclamationlabs.connid.base.connector.authenticator.OAuth2TokenPasswordAuthenticator;
 import com.exclamationlabs.connid.base.gotomeeting.adapter.GotoMeetingGroupsAdapter;
 import com.exclamationlabs.connid.base.gotomeeting.adapter.GotoMeetingUsersAdapter;
+import com.exclamationlabs.connid.base.gotomeeting.attribute.GotoMeetingGroupAttribute;
+import com.exclamationlabs.connid.base.gotomeeting.attribute.GotoMeetingUserAttribute;
 import com.exclamationlabs.connid.base.gotomeeting.configuration.GotoMeetingConfiguration;
 import com.exclamationlabs.connid.base.gotomeeting.driver.rest.GotoMeetingDriver;
 import org.identityconnectors.framework.spi.ConnectorClass;
+
+import java.util.HashSet;
+import java.util.Set;
 
 @ConnectorClass(displayNameKey = "gotomeeting.connector.display",
         configurationClass = GotoMeetingConfiguration.class)
@@ -31,6 +36,11 @@ public class GotoMeetingConnector extends BaseFullAccessConnector<GotoMeetingCon
         setAuthenticator((Authenticator) new OAuth2TokenPasswordAuthenticator());
         setDriver(new GotoMeetingDriver());
         setAdapters(new GotoMeetingUsersAdapter(), new GotoMeetingGroupsAdapter());
+        Set<String> filterAttributeNames = new HashSet<>();
+        filterAttributeNames.add(GotoMeetingUserAttribute.EMAIL.name());
+        filterAttributeNames.add(GotoMeetingGroupAttribute.GROUP_NAME.name());
+        setEnhancedFiltering(true);
+        setFilterAttributes(filterAttributeNames);
 
     }
 

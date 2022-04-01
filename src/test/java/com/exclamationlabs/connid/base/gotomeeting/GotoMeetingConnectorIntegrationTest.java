@@ -21,6 +21,7 @@ import com.exclamationlabs.connid.base.gotomeeting.attribute.GotoMeetingUserAttr
 import com.exclamationlabs.connid.base.gotomeeting.configuration.GotoMeetingConfiguration;
 import org.apache.commons.lang3.StringUtils;
 import org.identityconnectors.framework.common.objects.*;
+import org.identityconnectors.framework.common.objects.filter.EqualsFilter;
 import org.junit.Before;
 import org.junit.FixMethodOrder;
 import org.junit.Test;
@@ -103,6 +104,18 @@ public class GotoMeetingConnectorIntegrationTest extends IntegrationTest {
         assertTrue(StringUtils.isNotBlank(idValues.get(0)));
     }
 
+    @Test
+    public void test142UserGetUsingEmailFilter() {
+        List<String> idValues = new ArrayList<>();
+        List<String> nameValues = new ArrayList<>();
+        ResultsHandler resultsHandler = ConnectorTestUtils.buildResultsHandler(idValues, nameValues);
+
+        Attribute idAttribute = new AttributeBuilder().setName(GotoMeetingUserAttribute.EMAIL.name()).
+                addValue("david@gilmour.com").build();
+        connector.executeQuery(ObjectClass.ACCOUNT, new EqualsFilter(idAttribute), resultsHandler, new OperationOptionsBuilder().build());
+
+        assertEquals(1, idValues.size());
+    }
 
     @Test
     public void test210GroupCreate() {

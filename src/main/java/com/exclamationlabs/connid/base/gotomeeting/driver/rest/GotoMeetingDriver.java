@@ -16,6 +16,7 @@ package com.exclamationlabs.connid.base.gotomeeting.driver.rest;
 import com.exclamationlabs.connid.base.connector.driver.rest.BaseRestDriver;
 import com.exclamationlabs.connid.base.connector.driver.rest.RestFaultProcessor;
 import com.exclamationlabs.connid.base.connector.driver.rest.RestResponseData;
+import com.exclamationlabs.connid.base.connector.results.ResultsPaginator;
 import com.exclamationlabs.connid.base.gotomeeting.configuration.GotoMeetingConfiguration;
 import com.exclamationlabs.connid.base.gotomeeting.model.GotoMeetingGroup;
 import com.exclamationlabs.connid.base.gotomeeting.model.GotoMeetingUser;
@@ -47,6 +48,16 @@ public class GotoMeetingDriver extends BaseRestDriver<GotoMeetingConfiguration> 
     @Override
     protected boolean usesBearerAuthorization() {
         return true;
+    }
+
+    static String getPaginationString(ResultsPaginator paginator) {
+        String response = "";
+        if (paginator.hasPagination()) {
+            // Note: subtract 1 from offset; GotoMeeting offset is zero-based; Midpoint is one-based
+            response += "pageSize=" + paginator.getPageSize() +
+                    "&offset=" + (paginator.getCurrentOffset() - 1) + "&";
+        }
+        return response;
     }
 
     @Override
