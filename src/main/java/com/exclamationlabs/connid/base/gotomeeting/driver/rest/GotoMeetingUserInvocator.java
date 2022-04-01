@@ -22,6 +22,8 @@ import com.exclamationlabs.connid.base.gotomeeting.model.response.ListUsersRespo
 import org.apache.commons.lang3.StringUtils;
 import org.identityconnectors.framework.common.exceptions.ConnectorException;
 
+import java.io.UnsupportedEncodingException;
+import java.net.URLEncoder;
 import java.util.*;
 
 public class GotoMeetingUserInvocator implements DriverInvocator<GotoMeetingDriver, GotoMeetingUser> {
@@ -71,7 +73,11 @@ public class GotoMeetingUserInvocator implements DriverInvocator<GotoMeetingDriv
     @Override
     public Set<GotoMeetingUser> getAll(GotoMeetingDriver driver, ResultsFilter filter,
                                         ResultsPaginator paginator, Integer max) throws ConnectorException {
-        ListUsersResponse response = driver.executeGetRequest(driver.getAccountUrl() + "/users", ListUsersResponse.class).getResponseObject();
+        String additionalQueryString = "?" + GotoMeetingDriver.getPaginationString(paginator);
+        additionalQueryString += getUserFilterQueryString(filter);
+
+        ListUsersResponse response = driver.executeGetRequest(driver.getAccountUrl() + "/users" +
+                additionalQueryString, ListUsersResponse.class).getResponseObject();
         return response.getResults();
     }
 
@@ -89,5 +95,28 @@ public class GotoMeetingUserInvocator implements DriverInvocator<GotoMeetingDriv
         // Note: GotoMeeting only seems to support removing a user from ALL groups it
         // currently belongs to.  So that is the logic that is invoked here.
         driver.executeDeleteRequest(driver.getAccountUrl() + "/users/" + userId + "/groups", null);
+    }
+
+    private static String getUserFilterQueryString(ResultsFilter filter) {
+        String response = "";
+        if (filter != null && filter.getAttribute() != null) {
+            try {
+                switch(filter.getAttribute()) {
+                    case "USER_KEY": response += "filter=(key=" +
+                            URLEncoder.encode(
+                                    "\"" + filter.getValue() + "\"", "UTF-8") + ")" ; break;
+                    case "EMAIL":
+                            response += "filter=(email=" +
+                                    URLEncoder.encode(
+                                            "\"" + filter.getValue() + "\"", "UTF-8") + ")" ; break;
+
+                    default: break;
+                }
+            } catch (UnsupportedEncodingException un) {
+                throw new ConnectorException(un);
+            }
+        }
+
+        return response;
     }
 }
